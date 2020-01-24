@@ -1,0 +1,4 @@
+deploy_microservices=true
+cloudbuild_sa_role=roles/owner
+transaction_topic_name=transactions
+balance_topic_name=balance

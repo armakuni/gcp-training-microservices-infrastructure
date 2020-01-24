@@ -1,0 +1,63 @@
+steps:
+
+  - name: "gcr.io/cloud-builders/gcloud"
+    args:
+      [
+        "services",
+        "enable",
+        "iam.googleapis.com",
+        "--project",
+        "$PROJECT_ID"
+      ]
+
+  - name: "gcr.io/cloud-builders/gcloud"
+    args:
+      [
+        "services",
+        "enable",
+        "cloudresourcemanager.googleapis.com",
+        "--project",
+        "$PROJECT_ID"
+      ]
+
+  - name: "gcr.io/cloud-builders/gcloud"
+    args:
+      [
+        "services",
+        "enable",
+        "cloudfunctions.googleapis.com",
+        "--project",
+        "$PROJECT_ID"
+      ]
+
+  - id: "Instantiate Firestore"
+    name: gcr.io/cloud-builders/gcloud
+    entrypoint: /bin/bash
+    args:
+     - -c
+     - |
+       gcloud components install alpha
+       gcloud alpha firestore databases create --region=europe-west
+       echo Firestore created
+
+  - name: "gcr.io/cloud-builders/gcloud"
+    args:
+      [
+        "pubsub",
+        "topics",
+        "create",
+        "${_BALANCE_TOPIC_NAME}",
+      ]
+
+  - name: "gcr.io/cloud-builders/gcloud"
+    args:
+      [
+        "pubsub",
+        "topics",
+        "create",
+        "${_TRANSACTION_TOPIC_NAME}",
+      ]
+
+substitutions:
+    _BALANCE_TOPIC_NAME: balance
+    _TRANSACTION_TOPIC_NAME: transactions
