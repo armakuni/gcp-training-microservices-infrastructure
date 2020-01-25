@@ -1,6 +1,7 @@
 steps:
 
-  - name: "gcr.io/cloud-builders/gcloud"
+  - id: "Enable Google IAM APIs"
+    name: "gcr.io/cloud-builders/gcloud"
     args:
       [
         "services",
@@ -10,7 +11,8 @@ steps:
         "$PROJECT_ID"
       ]
 
-  - name: "gcr.io/cloud-builders/gcloud"
+  - id: "Enable Google Cloud Resource Manager APIs"
+    name: "gcr.io/cloud-builders/gcloud"
     args:
       [
         "services",
@@ -20,7 +22,8 @@ steps:
         "$PROJECT_ID"
       ]
 
-  - name: "gcr.io/cloud-builders/gcloud"
+  - id: "Enable Google CloudFunctions APIs"
+    name: "gcr.io/cloud-builders/gcloud"
     args:
       [
         "services",
@@ -30,6 +33,25 @@ steps:
         "$PROJECT_ID"
       ]
 
+  - id: "Enable App Engine Admin API"
+    name: "gcr.io/cloud-builders/gcloud"
+    args:
+        [
+          "services",
+          "enable",
+          "appengine.googleapis.com",
+          "--project",
+          "$PROJECT_ID"
+        ]
+
+  - id: "Create App Engine App"
+    name: gcr.io/cloud-builders/gcloud
+    entrypoint: /bin/bash
+    args:
+     - -c
+     - |
+       gcloud app create --region=europe-west || echo App engine already exist
+  
   - id: "Instantiate Firestore"
     name: gcr.io/cloud-builders/gcloud
     entrypoint: /bin/bash
@@ -40,7 +62,8 @@ steps:
        gcloud alpha firestore databases create --region=europe-west
        echo Firestore created
 
-  - name: "gcr.io/cloud-builders/gcloud"
+  - id: "Create Balance PubSub Topic"
+    name: "gcr.io/cloud-builders/gcloud"
     args:
       [
         "pubsub",
@@ -49,7 +72,8 @@ steps:
         "${_BALANCE_TOPIC_NAME}",
       ]
 
-  - name: "gcr.io/cloud-builders/gcloud"
+  - id: "Create Transaction PubSub Topic"
+    name: "gcr.io/cloud-builders/gcloud"
     args:
       [
         "pubsub",
