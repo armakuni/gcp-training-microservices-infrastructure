@@ -1,9 +1,7 @@
 # GCP Infrastructure and Microservice Deployment Repository
 
 ## Before running the GCP infra pipeline ensure that following are there:
-1. Your account should have higher level privileges(may be the owner) to execute this script as it involves enabling the APIs and provisioning GCP resources.
-2. If you would like to deploy Microservices and run the Smoke Test through this script. 
-   Ensure that below repositories are forked in your account and than cloned in the same directory where this repo is cloned. 
+1. You must fork and clone the below given repositories in your workstation in the same directory where this Infra repository is cloned :
    * [gcp-training-customer-service](https://github.com/armakuni/gcp-training-customer-service)
    * [gcp-training-account-service](https://github.com/armakuni/gcp-training-account-service)
    * [gcp-training-cashier-service](https://github.com/armakuni/gcp-training-cashier-service)
@@ -12,18 +10,25 @@
    * [gcp-training-microservices-smoke-test](https://github.com/armakuni/gcp-training-microservices-smoke-test)
 
    Your project structure should look something like this where all projects are cloned at the same level.
-![](images/project_structure.png)
-   If not you may clone them according to your convenience.
-3. The Cloud Build Service Account has the access or role allocated to provision the resources (Service Account, PubSub, Firestore etc)
-4. On a brand new project, the setup script may fail because there is no app engine set up in the project and may get an error with Firestore such as:
-```
-ERROR: gcloud crashed (AppEngineAppDoesNotExist): You must first create a Google App Engine app in the corresponding region by running: 
-```
-
-To avoid the error execute below command and create an app engine app.
-```bash
-gcloud app create --region=europe-west
-```
+   ![](images/project_structure.png)
+2. You must update the "repo_owner" property in [config.cfg.defaults](config.cfg.defaults) file with your ```GitHub - UserId```.
+   
+   Once replaced config.cfg.defaults should look something like
+   ```
+    deploy_microservices=true
+    cloudbuild_sa_role=roles/owner
+    transaction_topic_name=transactions
+    balance_topic_name=balance
+    repo_owner=abhisheksr01
+   ```
+   where "abhisheksr01" is the GitHub User Id.
+3. The default behavior(configured) of the script is to deploy the Microservices and run smoke tests.
+    If you wish to manually deploy these Microservices then set the below property to ```false``` in [config.cfg.defaults](config.cfg.defaults).
+   ```
+   deploy_microservices=true
+   ```
+4. Your account should have higher level privileges(may be the owner) to execute this script as it involves enabling the APIs and provisioning GCP resources.
+5. The Cloud Build Service Account has the access or role allocated to provision the resources (Service Account, PubSub, Firestore etc)
    
 ## Execution:
 
@@ -36,6 +41,10 @@ The [setup_gcp_infra](setup_gcp_infra.sh) script performs below tasks:
 4. Create a PubSub topic
 5. Deploy Microservices if first parameter ```deploy_microservices``` in [config.cfg.defaults](config.cfg.defaults) is set to ```true```, default is ```true```
 6. If opted to deploy Microservices then will trigger the Smoke Tests in Cloud Build Pipeline against the newly deployed Microservices.
+7. Creates Cloud Build Triggers for each Microservice
+   
+The below diagram should help you to understand the execution flow within the infra script:
+![](images/infra_script_request_flow_diagram.png)
    
 Execute below command to run the script:
 

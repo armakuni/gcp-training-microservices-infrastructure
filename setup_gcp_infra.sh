@@ -3,6 +3,7 @@ source config.shlib # load the config library functions
 project_id=$(gcloud config get-value project)
 project_number=$(gcloud projects describe ${project_id} | grep projectNumber | sed 's/projectNumber: //g' | tr -d [[:punct:]])
 deploy_microservices="$(config_get deploy_microservices)"
+repo_owner="$(config_get repo_owner)"
 echo Provisioning infrastructure in ${project_id}
 echo project number is ${project_number}
 
@@ -12,6 +13,10 @@ gcloud projects add-iam-policy-binding ${project_id} --member "serviceAccount:${
 echo Executing the Set Up GCP Infra pipeline
 gcloud builds submit --substitutions=_TRANSACTION_TOPIC_NAME="$(config_get transaction_topic_name)",_BALANCE_TOPIC_NAME="$(config_get balance_topic_name)"
 echo Task: Set Up GCP Infra pipeline executed, check the logs if its successful
+
+echo Creating Firestore Native Database
+gcloud alpha firestore databases create --region=europe-west --database_type=Native
+echo Firestore Database Created
 
 if [ "$deploy_microservices" = true ]; then
 
@@ -43,7 +48,7 @@ if [ "$deploy_microservices" = true ]; then
     echo -------------------------------------------------------------------------------------------------------------------------
     echo Exporting all the Microservice URLs to environment variables and create a microservice_url_env.sh for further references.
     echo -------------------------------------------------------------------------------------------------------------------------
-    rm -rf microservice_url_env.sh
+    rm -f microservice_url_env.sh
     echo export CUSTOMER_SERVICE_URL=${customer_service_url} >>microservice_url_env.sh
     echo export ACCOUNT_SERVICE_URL=${account_service_url} >>microservice_url_env.sh
     echo export CASHIER_SERVICE_URL=${cashier_service_url} >>microservice_url_env.sh
@@ -53,6 +58,10 @@ if [ "$deploy_microservices" = true ]; then
 
     echo Executing the Smoke Tests in Cloud Build Pipeline
     gcloud builds submit --substitutions=_CUSTOMER_SERVICE_URL=$CUSTOMER_SERVICE_URL,_ACCOUNT_SERVICE_URL=$ACCOUNT_SERVICE_URL,_CASHIER_SERVICE_URL=$CASHIER_SERVICE_URL,_TRANSACTION_SERVICE_URL=$TRANSACTION_SERVICE_URL,_BALANCE_SERVICE_URL=$BALANCE_SERVICE_URL ../gcp-training-microservices-smoke-tests --config="../gcp-training-microservices-smoke-tests/cloudbuild.yaml"
+
+    echo Creating the Cloud Build Triggers for each microservice
+    gcloud builds submit --config=cloudbuild_create_triggers.yaml --substitutions=_REPO_OWNER="$repo_owner",_CUSTOMER_SERVICE_URL=$CUSTOMER_SERVICE_URL,_ACCOUNTS_SERVICE_URL=$ACCOUNT_SERVICE_URL
+    echo Creating the Cloud Build Triggers Created
 else
     echo Skipped microservices deployment
 fi

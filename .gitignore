@@ -1,2 +1,3 @@
 infra_execution*.log
 microservice_url_env.sh
+.vscode

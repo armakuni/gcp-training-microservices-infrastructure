@@ -1,0 +1,28 @@
+steps:
+  - name: "gcr.io/cloud-builders/gcloud"
+    id: "Create Cloud Build triggers"
+    entrypoint: /bin/bash
+    args:
+    - -c
+    - |
+      gcloud components install beta
+      gcloud beta builds triggers create github --repo-owner="${_REPO_OWNER}" --repo-name="gcp-training-customer-service" --branch-pattern="${_BRANCH_PATTERN}" --build-config="${_BUILD_CONFIG}" --substitutions=_CUSTOMER_NAMESPACE="${_CUSTOMER_NAMESPACE}"
+      gcloud beta builds triggers create github --repo-owner="${_REPO_OWNER}" --repo-name="gcp-training-account-service" --branch-pattern="${_BRANCH_PATTERN}" --build-config="${_BUILD_CONFIG}" --substitutions=_ACCOUNT_NAMESPACE="${_ACCOUNT_NAMESPACE}",_CUSTOMER_SERVICE_URL="${_CUSTOMER_SERVICE_URL}"
+      gcloud beta builds triggers create github --repo-owner="${_REPO_OWNER}" --repo-name="gcp-training-cashier-service" --branch-pattern="${_BRANCH_PATTERN}" --build-config="${_BUILD_CONFIG}" --substitutions=_TRANSACTIONS_TOPIC_ID="${_TRANSACTIONS_TOPIC_ID}"
+      gcloud beta builds triggers create github --repo-owner="${_REPO_OWNER}" --repo-name="gcp-training-transaction-service" --branch-pattern="${_BRANCH_PATTERN}" --build-config="${_BUILD_CONFIG}" --substitutions=_ACCOUNTS_SERVICE_URL="${_ACCOUNTS_SERVICE_URL}",_BALANCE_TOPIC_ID="${_BALANCE_TOPIC_ID}",_TRANSACTION_NAMESPACE="${_TRANSACTION_NAMESPACE}"
+      gcloud beta builds triggers create github --repo-owner="${_REPO_OWNER}" --repo-name="gcp-training-balance-service" --branch-pattern="${_BRANCH_PATTERN}" --build-config="${_BUILD_CONFIG}" --substitutions=_BALANCE_NAMESPACE="${_BALANCE_NAMESPACE}",_BALANCE_UPDATES_TOPIC="${_BALANCE_TOPIC_ID}",_BALANCE_WORKER_FUNCTION_NAME="${_BALANCE_WORKER_FUNCTION_NAME}"
+
+substitutions:
+  _BRANCH_PATTERN: .*
+  _REPO_OWNER: armakuni
+  _BUILD_CONFIG: cloudbuild.yaml
+  _CUSTOMER_NAMESPACE: customer
+  _ACCOUNT_NAMESPACE: accounts
+  _CUSTOMER_SERVICE_URL: http://localhost:5000/customers
+  _TRANSACTIONS_TOPIC_ID: transactions
+  _ACCOUNTS_SERVICE_URL: http://localhost:5001/accounts
+  _BALANCE_TOPIC_ID: balance
+  _TRANSACTION_NAMESPACE: transactions
+  _BALANCE_NAMESPACE: account_balances
+  _BALANCE_WORKER_FUNCTION_NAME: store_account_balance_update
+  

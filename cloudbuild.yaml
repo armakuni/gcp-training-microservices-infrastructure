@@ -36,13 +36,13 @@ steps:
   - id: "Enable App Engine Admin API"
     name: "gcr.io/cloud-builders/gcloud"
     args:
-        [
-          "services",
-          "enable",
-          "appengine.googleapis.com",
-          "--project",
-          "$PROJECT_ID"
-        ]
+      [
+        "services",
+        "enable",
+        "appengine.googleapis.com",
+        "--project",
+        "$PROJECT_ID"
+      ]
 
   - id: "Create App Engine App"
     name: gcr.io/cloud-builders/gcloud
@@ -50,17 +50,19 @@ steps:
     args:
      - -c
      - |
-       gcloud app create --region=europe-west || echo App engine already exist
+       gcloud app create --region=europe-west || echo App engine already exists
   
-  - id: "Instantiate Firestore"
-    name: gcr.io/cloud-builders/gcloud
-    entrypoint: /bin/bash
-    args:
-     - -c
-     - |
-       gcloud components install alpha
-       gcloud alpha firestore databases create --region=europe-west
-       echo Firestore created
+  # Fails as expecting the parameter 'database_type' to be provided but does not yet exist in the gcloud alpha documentation
+  # 
+  # - id: "Instantiate Firestore"
+  #   name: gcr.io/cloud-builders/gcloud
+  #   entrypoint: bash
+  #   args:
+  #   - -c
+  #   - |
+  #      gcloud components update 
+  #      gcloud alpha firestore databases create --region=europe-west --database_type=Native
+  #      echo Firestore created
 
   - id: "Create Balance PubSub Topic"
     name: "gcr.io/cloud-builders/gcloud"
