@@ -15,7 +15,7 @@ gcloud builds submit --substitutions=_TRANSACTION_TOPIC_NAME="$(config_get trans
 echo Task: Set Up GCP Infra pipeline executed, check the logs if its successful
 
 echo Creating Firestore Native Database
-gcloud alpha firestore databases create --region=europe-west --database_type=Native
+gcloud alpha firestore databases create --region=europe-west
 echo Firestore Database Created
 
 if [ "$deploy_microservices" = true ]; then
