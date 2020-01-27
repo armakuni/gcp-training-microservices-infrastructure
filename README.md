@@ -11,7 +11,8 @@
 
    Your project structure should look something like this where all projects are cloned at the same level.
    ![](images/project_structure.png)
-2. You must update the "repo_owner" property in [config.cfg.defaults](config.cfg.defaults) file with your ```GitHub - UserId```.
+2. You must update the "repo_owner" property in [config.cfg.defaults](config.cfg.defaults) file with your ```GitHub-UserId```.
+   Else the script will not execute and throw an error.
    
    Once replaced config.cfg.defaults should look something like
    ```
@@ -19,9 +20,8 @@
     cloudbuild_sa_role=roles/owner
     transaction_topic_name=transactions
     balance_topic_name=balance
-    repo_owner=abhisheksr01
+    repo_owner=[GITHUB_ID]
    ```
-   where "abhisheksr01" is the GitHub User Id.
 3. The default behavior(configured) of the script is to deploy the Microservices and run smoke tests.
     If you wish to manually deploy these Microservices then set the below property to ```false``` in [config.cfg.defaults](config.cfg.defaults).
    ```
