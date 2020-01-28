@@ -32,6 +32,8 @@
    
 ## Execution:
 
+**NOTE:** This training exercise currently uses Google Cloud CLI commands which are in alpha and beta stages. This means that there is a possibility that the setup script you will be instructed to run may fail when there are updates to these commands. We try to keep this lab up to date but if problems occur please inform the workshop leader and they will assist you.
+
 Before execution ensure that you are in the root of the infra repository.
 
 The [setup_gcp_infra](setup_gcp_infra.sh) script performs below tasks:
