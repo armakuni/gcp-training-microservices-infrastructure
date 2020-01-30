@@ -70,7 +70,7 @@ else
         . microservice_url_env.sh
 
         echo Executing the Smoke Tests in Cloud Build Pipeline
-        gcloud builds submit --substitutions=_CUSTOMER_SERVICE_URL=$CUSTOMER_SERVICE_URL,_ACCOUNT_SERVICE_URL=$ACCOUNT_SERVICE_URL,_CASHIER_SERVICE_URL=$CASHIER_SERVICE_URL,_TRANSACTION_SERVICE_URL=$TRANSACTION_SERVICE_URL,_BALANCE_SERVICE_URL=$BALANCE_SERVICE_URL ../gcp-training-microservices-smoke-tests --config="../gcp-training-microservices-smoke-tests/cloudbuild.yaml"
+        gcloud builds submit --substitutions=_CUSTOMER_SERVICE_URL=$CUSTOMER_SERVICE_URL,_ACCOUNT_SERVICE_URL=$ACCOUNT_SERVICE_URL,_CASHIER_SERVICE_URL=$CASHIER_SERVICE_URL,_TRANSACTION_SERVICE_URL=$TRANSACTION_SERVICE_URL,_BALANCE_SERVICE_URL=$BALANCE_SERVICE_URL ../gcp-training-microservices-smoke-test --config="../gcp-training-microservices-smoke-test/cloudbuild.yaml"
 
         echo Creating the Cloud Build Triggers for each microservice
         gcloud builds submit --config=cloudbuild_create_triggers.yaml --substitutions=_REPO_OWNER="$repo_owner",_CUSTOMER_SERVICE_URL=$CUSTOMER_SERVICE_URL,_ACCOUNTS_SERVICE_URL=$ACCOUNT_SERVICE_URL
