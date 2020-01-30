@@ -12,6 +12,11 @@ if [ "$repo_owner" = '' ]; then
     echo Script was not executed, Kindly update the property value in config.cfg.defaults and rerun the script 1>&2
     echo ----------------- 1>&2
 else   
+    echo Updating and Installing gcloud components 
+    gcloud components update
+    gcloud components install alpha
+    gcloud components install beta
+
     echo Provisioning infrastructure in ${project_id}
     echo project number is ${project_number}
 
