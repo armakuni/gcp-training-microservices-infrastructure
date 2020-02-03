@@ -13,9 +13,9 @@ if [ "$repo_owner" = '' ]; then
     echo ----------------- 1>&2
 else   
     echo Updating and Installing gcloud components 
-    gcloud components update
-    gcloud components install alpha
-    gcloud components install beta
+    yes | gcloud components update
+    yes | gcloud components install alpha
+    yes | gcloud components install beta
 
     echo Provisioning infrastructure in ${project_id}
     echo project number is ${project_number}
