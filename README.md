@@ -51,7 +51,7 @@ The below diagram should help you to understand the execution flow within the in
 Execute below command to run the script:
 
 ```bash
-. setup_gcp_infra.sh > infra_execution_$(date +%s).log
+./setup_gcp_infra.sh > infra_execution_$(date +%s).log
 ```
 
 Here ```infra_execution_[TIMESTAMP].log``` file will store the execution logs for debugging purpose.
