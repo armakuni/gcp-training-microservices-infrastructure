@@ -44,6 +44,17 @@ steps:
         "$PROJECT_ID"
       ]
 
+  - id: "Enable Firestore API"
+    name: "gcr.io/cloud-builders/gcloud"
+    args:
+      [
+        "services",
+        "enable",
+        "firestore.googleapis.com",
+        "--project",
+        "$PROJECT_ID"
+      ]
+
   - id: "Create App Engine App"
     name: gcr.io/cloud-builders/gcloud
     entrypoint: /bin/bash
@@ -51,38 +62,32 @@ steps:
      - -c
      - |
        gcloud app create --region=europe-west || echo App engine already exists
-  
-  # Fails as expecting the parameter 'database_type' to be provided but does not yet exist in the gcloud alpha documentation
-  # 
-  # - id: "Instantiate Firestore"
-  #   name: gcr.io/cloud-builders/gcloud
-  #   entrypoint: bash
-  #   args:
-  #   - -c
-  #   - |
-  #      gcloud components update 
-  #      gcloud alpha firestore databases create --region=europe-west --database_type=Native
-  #      echo Firestore created
 
   - id: "Create Balance PubSub Topic"
-    name: "gcr.io/cloud-builders/gcloud"
+    name: gcr.io/cloud-builders/gcloud
+    entrypoint: /bin/bash
     args:
-      [
-        "pubsub",
-        "topics",
-        "create",
-        "${_BALANCE_TOPIC_NAME}",
-      ]
+      - -c
+      - |
+        topic_ref=$(gcloud pubsub topics list | grep ${_BALANCE_TOPIC_NAME})
+        if [[ $topic_ref = '' ]]; then
+          gcloud pubsub topics create ${_BALANCE_TOPIC_NAME}
+        else
+          echo Balance topic already exists
+        fi
 
   - id: "Create Transaction PubSub Topic"
-    name: "gcr.io/cloud-builders/gcloud"
+    name: gcr.io/cloud-builders/gcloud
+    entrypoint: /bin/bash
     args:
-      [
-        "pubsub",
-        "topics",
-        "create",
-        "${_TRANSACTION_TOPIC_NAME}",
-      ]
+      - -c
+      - |
+        topic_ref=$(gcloud pubsub topics list | grep ${_TRANSACTION_TOPIC_NAME})
+        if [[ $topic_ref = '' ]]; then
+          gcloud pubsub topics create ${_TRANSACTION_TOPIC_NAME}
+        else
+          echo Balance topic already exists
+        fi
 
 substitutions:
     _BALANCE_TOPIC_NAME: balance

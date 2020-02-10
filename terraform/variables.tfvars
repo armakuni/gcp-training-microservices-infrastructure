@@ -13,3 +13,11 @@ pubsub_topic_list = [
   "balance",
   "transactions"
 ]
+
+microservice_list = [
+  "gcp-training-customer-service",
+  "gcp-training-account-service",
+  "gcp-training-transaction-service",
+  "gcp-training-balance-service",
+  "gcp-training-cashier-service"
+]
