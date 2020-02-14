@@ -7,7 +7,8 @@ gcp_service_list = [
   "cloudresourcemanager.googleapis.com",
   "iam.googleapis.com",
   "cloudfunctions.googleapis.com",
-  "appengine.googleapis.com"
+  "appengine.googleapis.com",
+  "firestore.googleapis.com"
 ]
 pubsub_topic_list = [
   "balance",
